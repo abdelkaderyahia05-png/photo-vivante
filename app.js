@@ -309,6 +309,12 @@ $("#exporter").addEventListener("click", async () => {
   const ext = type.includes("mp4") ? "mp4" : "webm";
   const blob = new Blob(morceaux, { type: type.split(";")[0] });
   const lien = $("#telecharger");
+  if (blob.size < 20000) { // aucune image enregistrée : l'écran s'est éteint ou l'appli est passée en arrière-plan
+    $("#info-export").textContent = "La fabrication a été interrompue. Garde l'appli ouverte et l'écran allumé pendant la fabrication, puis réessaie.";
+    bouton.disabled = false; bouton.textContent = "Refaire la vidéo";
+    $("#barre-remplie").style.width = "0"; $("#barre").classList.add("cache");
+    return;
+  }
   lien.href = URL.createObjectURL(blob);
   lien.download = `photo-vivante-${duree}s.${ext}`;
   lien.textContent = `Enregistrer la vidéo (${ext.toUpperCase()}, ${(blob.size / 1e6).toFixed(1)} Mo)`;

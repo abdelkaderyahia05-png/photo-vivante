@@ -1,5 +1,5 @@
 // Garde l'appli disponible hors connexion (l'IA de profondeur est mise en cache par Transformers.js).
-const CACHE = "photo-vivante-v2";
+const CACHE = "photo-vivante-v3";
 const FICHIERS = ["./", "index.html", "style.css", "app.js", "manifest.webmanifest",
   "icones/icone.svg", "icones/icone-192.png", "icones/icone-512.png", "polices/PlusJakartaSans.woff2"];
 

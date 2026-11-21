@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1B4D">
+<title>Photo Vivante</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/icone.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icones/icone-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="entete">
+  <div class="marque">
+    <span class="pastille"></span>
+    <h1>Photo <span>Vivante</span></h1>
+  </div>
+  <p class="sous-titre">Ta photo devient un fond d'écran qui bouge.</p>
+</header>
+
+<main>
+  <!-- 1. Import -->
+  <section class="carte" id="etape-import">
+    <h2><span class="num">1</span> Choisis une photo</h2>
+    <label class="zone-import" id="zone-import">
+      <input type="file" id="fichier" accept="image/*">
+      <strong>Toucher pour choisir une photo</strong>
+      <small>Un homme, un animal, un paysage… Photo nette et bien éclairée = meilleur résultat.</small>
+    </label>
+  </section>
+
+  <!-- 2. Aperçu -->
+  <section class="carte cache" id="etape-apercu">
+    <h2><span class="num">2</span> Aperçu animé</h2>
+    <div class="onglets" role="tablist">
+      <button class="onglet actif" data-mode="3d" role="tab">Effet 3D · gratuit</button>
+      <button class="onglet" data-mode="ia" role="tab">Animation IA · payant</button>
+    </div>
+
+    <div class="ecran">
+      <canvas id="toile" width="1080" height="1920"></canvas>
+      <video id="video-ia" class="cache" playsinline loop muted></video>
+      <div class="horloge" aria-hidden="true"><b id="heure">12:00</b><span id="date">vendredi 21 novembre</span></div>
+      <div class="statut" id="statut"></div>
+    </div>
+
+    <!-- Réglages mode 3D -->
+    <div id="panneau-3d">
+      <div class="reglage">
+        <label for="force">Profondeur du mouvement</label>
+        <input type="range" id="force" min="0" max="100" value="55">
+      </div>
+      <div class="reglage">
+        <label for="vitesse">Durée d'une boucle</label>
+        <select id="duree">
+          <option value="5">5 secondes</option>
+          <option value="8" selected>8 secondes</option>
+          <option value="10">10 secondes</option>
+        </select>
+      </div>
+      <div class="reglage">
+        <label for="mouvement">Mouvement</label>
+        <select id="mouvement">
+          <option value="cercle" selected>Cercle doux</option>
+          <option value="balancier">Balancier gauche-droite</option>
+          <option value="respiration">Zoom qui respire</option>
+        </select>
+      </div>
+      <button class="bouton secondaire" id="gyro">Suivre l'inclinaison du téléphone</button>
+    </div>
+
+    <!-- Réglages mode IA -->
+    <div id="panneau-ia" class="cache">
+      <p class="note">La vraie animation (clignement, sourire, tête qui bouge) est calculée par un service en ligne
+        <b>payant</b> (fal.ai). Il faut un compte et une clé API. Rien n'est envoyé tant que tu n'as pas mis ta clé et appuyé sur le bouton.</p>
+      <div class="reglage">
+        <label for="cle">Clé API fal.ai</label>
+        <input type="password" id="cle" placeholder="Colle ta clé ici" autocomplete="off">
+      </div>
+      <details>
+        <summary>Réglages avancés</summary>
+        <div class="reglage">
+          <label for="modele">Modèle (image → vidéo)</label>
+          <input type="text" id="modele" value="fal-ai/kling-video/v2.1/standard/image-to-video">
+        </div>
+        <div class="reglage">
+          <label for="consigne">Consigne envoyée à l'IA</label>
+          <textarea id="consigne" rows="3">The person blinks naturally, smiles gently and slightly turns the head. Static camera, subtle realistic motion, same lighting.</textarea>
+        </div>
+      </details>
+      <button class="bouton" id="animer-ia">Animer avec l'IA (payant)</button>
+    </div>
+  </section>
+
+  <!-- 3. Export -->
+  <section class="carte cache" id="etape-export">
+    <h2><span class="num">3</span> Récupère ta vidéo</h2>
+    <button class="bouton" id="exporter">Fabriquer la vidéo verticale</button>
+    <div class="barre cache" id="barre"><span id="barre-remplie"></span></div>
+    <button class="bouton cache" id="partager">Enregistrer dans Photos / Galerie</button>
+    <a class="bouton secondaire cache" id="telecharger" download>Enregistrer la vidéo</a>
+    <p class="note" id="info-export"></p>
+    <button class="lien" id="voir-aide">Comment la mettre en fond d'écran ?</button>
+  </section>
+
+  <!-- Aide fond d'écran -->
+  <section class="carte cache" id="aide">
+    <h2>Mettre en fond d'écran</h2>
+    <h3>Android</h3>
+    <ol>
+      <li>Enregistre la vidéo dans ta galerie.</li>
+      <li>Samsung : <b>Galerie</b> → ouvre la vidéo → <b>⋮</b> → <b>Définir comme fond d'écran</b> → Écran de verrouillage (vidéo de 15 s max).</li>
+      <li>Autres marques : selon le modèle, menu Fond d'écran → « Vidéo » ou « Animé ». Sinon, une appli gratuite de fond d'écran vidéo le fait.</li>
+    </ol>
+    <h3>iPhone</h3>
+    <ol>
+      <li>Un iPhone n'accepte pas une vidéo en fond d'écran : il faut la transformer en <b>Live Photo</b> (gratuit avec une appli comme « intoLive »).</li>
+      <li><b>Réglages</b> → <b>Fond d'écran</b> → <b>Ajouter</b> → choisis la Live Photo.</li>
+      <li>Selon la version d'iOS, elle bouge quand tu appuies longtemps sur l'écran verrouillé.</li>
+    </ol>
+  </section>
+</main>
+
+<footer>Prototype · ClaudeCode Academy</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
